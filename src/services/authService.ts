@@ -14,6 +14,7 @@ import type {
   RegisterCredentials,
   User,
 } from "../types/auth";
+import getFirebaseErrorMessage from "../components/ui/ErrorMessages";
 
 export const authService = {
   async logOut(): Promise<void> {
@@ -51,7 +52,8 @@ export const authService = {
 
       return updateUserData;
     } catch (error) {
-      throw new Error("Error logging in:" + error);
+      const message = getFirebaseErrorMessage(error);
+      throw new Error(message);
     }
   },
 

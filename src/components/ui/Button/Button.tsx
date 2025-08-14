@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes } from "react";
 import React from "react";
+import "./Button.css";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -37,3 +38,5 @@ export default function Button({
     </button>
   );
 }
+
+export { Button };

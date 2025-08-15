@@ -29,7 +29,7 @@ export interface LoginCredentials {
 export interface RegisterCredentials extends LoginCredentials {
   displayName: string;
   phone: string;
-  cnpj: string;
+  cpf: string;
   role: UserRole;
 }
 

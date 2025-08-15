@@ -31,9 +31,9 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (user) {
-      goTo(paths.menuAdmin);
+      goTo(paths.adminRoot);
     }
-  });
+  }, [user, goTo]);
 
   const handleEmailChange = (value: string) => {
     setEmail(value);

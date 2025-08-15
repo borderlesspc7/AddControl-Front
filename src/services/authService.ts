@@ -74,7 +74,7 @@ export const authService = {
         const userData: User = {
           uid: firebaseUser.uid,
           email: firebaseUser.email ?? credentials.email,
-          cnpj: credentials.cnpj,
+          cnpj: credentials.cpf,
           displayName: credentials.displayName,
           createdAt: new Date(),
           lastLoginAt: new Date(),

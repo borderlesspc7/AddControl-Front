@@ -1,0 +1,39 @@
+.admin-layout {
+  min-height: 100vh;
+  background: #f8fafc;
+  position: relative;
+}
+
+.admin-layout__main {
+  margin-left: 280px;
+  margin-top: 72px;
+  min-height: calc(100vh - 72px);
+  padding: 32px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.admin-layout__content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .admin-layout__main {
+    margin-left: 0;
+    margin-top: 0;
+    margin-bottom: 64px;
+    padding: 16px;
+    min-height: calc(100vh - 64px);
+  }
+
+  .admin-layout__content {
+    max-width: 100%;
+  }
+}
+
+.admin-layout__main {
+  transition: margin-left 0.3s ease-in-out;
+}

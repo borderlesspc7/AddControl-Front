@@ -23,7 +23,7 @@ export function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
   if (roles && roles.length > 0) {
     const userRole = user.role;
     if (!userRole || !roles.includes(userRole)) {
-      return <Navigate to={paths.menu} replace />;
+      return <Navigate to={paths.login} replace />;
     }
   }
 

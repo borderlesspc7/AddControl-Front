@@ -1,0 +1,137 @@
+.user-register-form {
+  max-width: 600px;
+  margin: 24px auto;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  transform: scale(0.95);
+  transform-origin: top center;
+}
+
+.user-register-form__header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.user-register-form__title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 6px 0;
+  line-height: 1.2;
+}
+
+.user-register-form__subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.user-register-form__form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.user-register-form__fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px 16px;
+}
+
+/* Compacta margens internas dos campos apenas neste formulário */
+.user-register-form .input-field {
+  margin-bottom: 0;
+}
+.user-register-form .input-field__label {
+  margin-bottom: 4px;
+}
+.user-register-form .select-field__label {
+  margin-bottom: 4px;
+}
+
+@media (min-width: 1024px) {
+  .user-register-form__fields {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* Deixe os dois primeiros campos (nome e email) em largura total */
+  .user-register-form__fields > *:nth-child(1),
+  .user-register-form__fields > *:nth-child(2) {
+    grid-column: 1 / -1;
+  }
+}
+
+.user-register-form__actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.user-register-form__submit-btn {
+  min-width: 200px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-register-form {
+    margin: 16px;
+    padding: 24px 20px;
+    border-radius: 8px;
+  }
+
+  .user-register-form__title {
+    font-size: 24px;
+  }
+
+  .user-register-form__subtitle {
+    font-size: 14px;
+  }
+
+  .user-register-form__fields {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .user-register-form__submit-btn {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-register-form {
+    margin: 8px;
+    padding: 20px 16px;
+  }
+
+  .user-register-form__header {
+    margin-bottom: 24px;
+  }
+
+  .user-register-form__title {
+    font-size: 20px;
+  }
+
+  .user-register-form__subtitle {
+    font-size: 13px;
+  }
+}
+
+/* Dark mode removed */
+
+/* Loading state */
+.user-register-form__submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Focus management */
+.user-register-form__form:focus-within .user-register-form__submit-btn {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}

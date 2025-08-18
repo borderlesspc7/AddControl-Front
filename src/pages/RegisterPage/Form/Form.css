@@ -123,8 +123,6 @@
   }
 }
 
-/* Dark mode removed */
-
 /* Loading state */
 .user-register-form__submit-btn:disabled {
   opacity: 0.7;

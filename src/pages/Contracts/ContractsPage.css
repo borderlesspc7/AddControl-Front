@@ -1,0 +1,98 @@
+.contracts-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+.contracts-page__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.contracts-page__content {
+  flex: 1;
+  padding-top: 80px; /* Header height + padding */
+  padding-bottom: 32px;
+  overflow-y: auto;
+}
+
+.contracts-page__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 32px;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .contracts-page__main {
+    margin-left: 260px;
+  }
+
+  .contracts-page__container {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contracts-page {
+    flex-direction: column;
+  }
+
+  .contracts-page__main {
+    margin-left: 0;
+    margin-top: 70px; /* Sidebar height when horizontal */
+  }
+
+  .contracts-page__content {
+    padding-top: 90px; /* Adjusted for mobile header */
+  }
+
+  .contracts-page__container {
+    padding: 0 16px;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contracts-page__content {
+    padding-top: 100px;
+    padding-bottom: 24px;
+  }
+
+  .contracts-page__container {
+    padding: 0 12px;
+    gap: 20px;
+  }
+}
+
+/* Smooth transitions for layout changes */
+.contracts-page__main {
+  transition: margin-left 0.3s ease;
+}
+
+.contracts-page__content {
+  transition: padding-top 0.3s ease;
+}
+
+/* Focus management for accessibility */
+.contracts-page:focus-within {
+  outline: none;
+}
+
+/* Print styles */
+@media print {
+  .contracts-page {
+    background: white;
+  }
+
+  .contracts-page__main {
+    margin-left: 0;
+  }
+
+  .contracts-page__content {
+    padding-top: 0;
+  }
+}

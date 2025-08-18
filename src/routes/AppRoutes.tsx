@@ -4,6 +4,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import { AdminLayout } from "../components/Layout/AdminLayout/AdminLayout";
 import { RegisterPage } from "../pages/RegisterPage/RegisterPage";
+import { ContractsPage } from "../pages/Contracts/ContractsPage";
 
 export default function AppRoutes() {
   return (
@@ -21,6 +22,7 @@ export default function AppRoutes() {
         >
           <Route index element={<RegisterPage />} />
           <Route path="register-user" element={<RegisterPage />} />
+          <Route path="contracts" element={<ContractsPage />} />
           {/* Outras rotas admin: contratos, preços, etc */}
         </Route>
       </Routes>

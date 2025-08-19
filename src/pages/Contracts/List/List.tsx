@@ -1,14 +1,30 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import "./List.css";
-import type { Contract } from "../../../types/contracts";
+import type { Contract, UpdateContractData } from "../../../types/contracts";
 
 interface ListProps {
   contracts: Contract[];
+  onContractUpdated: (contract: Contract) => Promise<void>;
+  onContractDeleted: (contractId: string) => Promise<void>;
 }
 
-export const List: React.FC<ListProps> = ({ contracts }) => {
+export const List: React.FC<ListProps> = ({
+  contracts,
+  onContractUpdated,
+  onContractDeleted,
+}) => {
+  const [editingContract, setEditingContract] = useState<Contract | null>(null);
+  const [deletingContractId, setDeletingContractId] = useState<string | null>(
+    null
+  );
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+  const [contractToDelete, setContractToDelete] = useState<Contract | null>(
+    null
+  );
+  const [editFormData, setEditFormData] = useState<UpdateContractData>({});
+
   const formatCurrency = (value: number): string => {
     return value.toLocaleString("pt-BR", {
       style: "currency",
@@ -29,7 +45,6 @@ export const List: React.FC<ListProps> = ({ contracts }) => {
     if (contract.pdfFile) {
       const url = URL.createObjectURL(contract.pdfFile);
       window.open(url, "_blank");
-      // Cleanup URL after a delay to prevent memory leaks
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
   };
@@ -45,6 +60,81 @@ export const List: React.FC<ListProps> = ({ contracts }) => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
+  };
+
+  const handleEdit = (contract: Contract) => {
+    setEditingContract(contract);
+    setEditFormData({
+      cliente: contract.cliente,
+      obra: contract.obra,
+      numeroContrato: contract.numeroContrato,
+      vigenciaInicio: contract.vigenciaInicio,
+      vigenciaFim: contract.vigenciaFim,
+      valor: contract.valor,
+      status: contract.status,
+    });
+  };
+
+  const handleEditCancel = () => {
+    setEditingContract(null);
+    setEditFormData({});
+  };
+
+  const handleEditSave = async () => {
+    if (!editingContract) return;
+
+    try {
+      const updatedContract: Contract = {
+        ...editingContract,
+        ...editFormData,
+        valor: Number(editFormData.valor) || editingContract.valor,
+      };
+
+      await onContractUpdated(updatedContract);
+      setEditingContract(null);
+      setEditFormData({});
+    } catch (error) {
+      console.error("Erro ao atualizar contrato:", error);
+      alert("Erro ao atualizar contrato. Tente novamente.");
+    }
+  };
+
+  const handleDelete = async (contractId: string) => {
+    setDeletingContractId(contractId);
+    try {
+      await onContractDeleted(contractId);
+    } catch (error) {
+      console.error("Erro ao deletar contrato:", error);
+      alert("Erro ao deletar contrato. Tente novamente.");
+    } finally {
+      setDeletingContractId(null);
+    }
+  };
+
+  const openDeleteModal = (contract: Contract) => {
+    setContractToDelete(contract);
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setContractToDelete(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!contractToDelete) return;
+    await handleDelete(contractToDelete.id);
+    closeDeleteModal();
+  };
+
+  const handleEditInputChange = (
+    field: keyof UpdateContractData,
+    value: string | number
+  ) => {
+    setEditFormData((prev) => ({
+      ...prev,
+      [field]: field === "valor" ? Number(value) : value,
+    }));
   };
 
   if (contracts.length === 0) {
@@ -100,7 +190,8 @@ export const List: React.FC<ListProps> = ({ contracts }) => {
               <th>Nº Contrato</th>
               <th>Vigência</th>
               <th>Valor</th>
-              <th>PDF</th>
+              <th>Status</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody className="contract-list__tbody">
@@ -142,38 +233,34 @@ export const List: React.FC<ListProps> = ({ contracts }) => {
                   </span>
                 </td>
                 <td className="contract-list__cell">
-                  <div className="contract-list__pdf-actions">
-                    <button
-                      type="button"
-                      onClick={() => handlePdfView(contract)}
-                      className="contract-list__pdf-btn contract-list__pdf-btn--view"
-                      title="Visualizar PDF"
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
+                  <span
+                    className={`contract-list__status contract-list__status--${contract.status}`}
+                  >
+                    {contract.status}
+                  </span>
+                </td>
+                <td className="contract-list__cell">
+                  <div className="contract-list__actions">
+                    {/* CRUD Actions */}
+                    <div className="contract-list__crud-actions">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(contract)}
+                        className="contract-list__action-btn contract-list__action-btn--edit"
+                        title="Editar contrato"
                       >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handlePdfDownload(contract)}
-                      className="contract-list__pdf-btn contract-list__pdf-btn--download"
-                      title="Baixar PDF"
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openDeleteModal(contract)}
+                        className="contract-list__action-btn contract-list__action-btn--delete"
+                        title="Excluir contrato"
+                        disabled={deletingContractId === contract.id}
                       >
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="7,10 12,15 17,10" />
-                        <line x1="12" y1="15" x2="12" y2="3" />
-                      </svg>
-                    </button>
+                        Excluir
+                      </button>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -190,6 +277,11 @@ export const List: React.FC<ListProps> = ({ contracts }) => {
               <h4 className="contract-list__card-title">{contract.cliente}</h4>
               <span className="contract-list__card-number">
                 {contract.numeroContrato}
+              </span>
+              <span
+                className={`contract-list__card-status contract-list__card-status--${contract.status}`}
+              >
+                {contract.status}
               </span>
             </div>
 
@@ -243,10 +335,163 @@ export const List: React.FC<ListProps> = ({ contracts }) => {
                 </svg>
                 Baixar PDF
               </button>
+              <button
+                type="button"
+                onClick={() => handleEdit(contract)}
+                className="contract-list__card-btn contract-list__card-btn--edit"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                onClick={() => openDeleteModal(contract)}
+                className="contract-list__card-btn contract-list__card-btn--delete"
+                disabled={deletingContractId === contract.id}
+              >
+                {deletingContractId === contract.id
+                  ? "Excluindo..."
+                  : "Excluir"}
+              </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Edit Modal */}
+      {editingContract && (
+        <div className="contract-list__edit-modal">
+          <div className="contract-list__edit-modal-content">
+            <h3>Editar Contrato</h3>
+            <div className="contract-list__edit-form">
+              <div className="contract-list__edit-row">
+                <label>Cliente:</label>
+                <input
+                  type="text"
+                  value={editFormData.cliente || ""}
+                  onChange={(e) =>
+                    handleEditInputChange("cliente", e.target.value)
+                  }
+                />
+              </div>
+              <div className="contract-list__edit-row">
+                <label>Obra:</label>
+                <input
+                  type="text"
+                  value={editFormData.obra || ""}
+                  onChange={(e) =>
+                    handleEditInputChange("obra", e.target.value)
+                  }
+                />
+              </div>
+              <div className="contract-list__edit-row">
+                <label>Nº Contrato:</label>
+                <input
+                  type="text"
+                  value={editFormData.numeroContrato || ""}
+                  onChange={(e) =>
+                    handleEditInputChange("numeroContrato", e.target.value)
+                  }
+                />
+              </div>
+              <div className="contract-list__edit-row">
+                <label>Vigência Início:</label>
+                <input
+                  type="date"
+                  value={editFormData.vigenciaInicio || ""}
+                  onChange={(e) =>
+                    handleEditInputChange("vigenciaInicio", e.target.value)
+                  }
+                />
+              </div>
+              <div className="contract-list__edit-row">
+                <label>Vigência Fim:</label>
+                <input
+                  type="date"
+                  value={editFormData.vigenciaFim || ""}
+                  onChange={(e) =>
+                    handleEditInputChange("vigenciaFim", e.target.value)
+                  }
+                />
+              </div>
+              <div className="contract-list__edit-row">
+                <label>Valor:</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={editFormData.valor || ""}
+                  onChange={(e) =>
+                    handleEditInputChange(
+                      "valor",
+                      parseFloat(e.target.value) || 0
+                    )
+                  }
+                />
+              </div>
+              <div className="contract-list__edit-row">
+                <label>Status:</label>
+                <select
+                  value={editFormData.status || "ativo"}
+                  onChange={(e) =>
+                    handleEditInputChange(
+                      "status",
+                      e.target.value as "ativo" | "inativo" | "pendente"
+                    )
+                  }
+                >
+                  <option value="ativo">Ativo</option>
+                  <option value="inativo">Inativo</option>
+                  <option value="pendente">Pendente</option>
+                </select>
+              </div>
+            </div>
+            <div className="contract-list__edit-actions">
+              <button
+                onClick={handleEditSave}
+                className="contract-list__edit-save"
+              >
+                Salvar
+              </button>
+              <button
+                onClick={handleEditCancel}
+                className="contract-list__edit-cancel"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirm Modal */}
+      {deleteModalOpen && contractToDelete && (
+        <div className="contract-list__delete-modal">
+          <div className="contract-list__delete-modal-content">
+            <h3>Excluir Contrato</h3>
+            <p>
+              Tem certeza que deseja excluir o contrato{" "}
+              <strong>{contractToDelete.numeroContrato}</strong> do cliente{" "}
+              <strong>{contractToDelete.cliente}</strong>?
+            </p>
+            <div className="contract-list__delete-actions">
+              <button
+                onClick={confirmDelete}
+                className="contract-list__delete-confirm"
+                disabled={deletingContractId === contractToDelete.id}
+              >
+                {deletingContractId === contractToDelete.id
+                  ? "Excluindo..."
+                  : "Excluir"}
+              </button>
+              <button
+                onClick={closeDeleteModal}
+                className="contract-list__delete-cancel"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

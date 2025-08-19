@@ -6,12 +6,15 @@ import InputField from "../../../components/ui/InputField/InputField";
 import FileUpload from "../../../components/FileUpload/FileUpload";
 import Button from "../../../components/ui/Button/Button";
 import type { Contract, ContractFormData } from "../../../types/contracts";
+import { contractService } from "../../../services/contractService";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface FormProps {
   onContractSaved: (contract: Contract) => void;
 }
 
 export const Form: React.FC<FormProps> = ({ onContractSaved }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState<ContractFormData>({
     id: "",
     cliente: "",
@@ -22,10 +25,17 @@ export const Form: React.FC<FormProps> = ({ onContractSaved }) => {
     valor: "",
     pdfFile: null as File | null,
     createdAt: new Date(),
+    updatedAt: new Date(),
+    createdBy: "",
+    status: "pendente",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const formatCurrency = (value: string): string => {
     const numbers = value.replace(/\D/g, "");
@@ -136,25 +146,40 @@ export const Form: React.FC<FormProps> = ({ onContractSaved }) => {
       return;
     }
 
+    if (!user) {
+      setSubmitMessage({
+        type: "error",
+        text: "Você precisa estar logado para salvar um contrato",
+      });
+      return;
+    }
+
     setIsLoading(true);
+    setSubmitMessage(null);
 
     try {
-      // Simular delay de salvamento
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const newContract: Contract = {
-        id: Date.now().toString(),
+      const contractDataForFirebse = {
         cliente: formData.cliente.trim(),
         obra: formData.obra.trim(),
         numeroContrato: formData.numeroContrato.trim(),
         vigenciaInicio: formData.vigenciaInicio,
         vigenciaFim: formData.vigenciaFim,
-        valor: parseCurrencyToNumber(formData.valor), // Converte para número
+        valor: formData.valor,
         pdfFile: formData.pdfFile,
-        createdAt: new Date(),
+        createdBy: user.uid,
+        status: formData.status,
       };
 
+      const newContract = await contractService.createContract(
+        contractDataForFirebse
+      );
+
       onContractSaved(newContract);
+
+      setSubmitMessage({
+        type: "success",
+        text: "Contrato salvo com sucesso",
+      });
 
       // Limpar formulário
       setFormData({
@@ -167,11 +192,18 @@ export const Form: React.FC<FormProps> = ({ onContractSaved }) => {
         pdfFile: null,
         id: "",
         createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: user.uid,
+        status: "ativo",
       } as ContractFormData);
 
       console.log("Contrato salvo com sucesso:", newContract);
     } catch (error) {
       console.error("Erro ao salvar contrato:", error);
+      setSubmitMessage({
+        type: "error",
+        text: "Erro ao salvar contrato",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -187,6 +219,14 @@ export const Form: React.FC<FormProps> = ({ onContractSaved }) => {
           Preencha as informações do contrato principal
         </p>
       </div>
+
+      {submitMessage && (
+        <div
+          className={`contract-form__message contract-form__message--${submitMessage.type}`}
+        >
+          {submitMessage.text}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="contract-form__form">
         <div className="contract-form__row">

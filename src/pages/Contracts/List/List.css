@@ -151,6 +151,12 @@
   font-size: 15px;
 }
 
+.contract-list__actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
 .contract-list__pdf-actions {
   display: flex;
   gap: 8px;
@@ -192,6 +198,270 @@
 .contract-list__pdf-btn--download:hover {
   background: #059669;
   color: white;
+}
+
+/* CRUD actions (Editar / Excluir) */
+.contract-list__crud-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contract-list__action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.contract-list__action-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+
+.contract-list__action-btn--edit {
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+
+.contract-list__action-btn--edit:hover {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.contract-list__action-btn--delete {
+  border-color: #ef4444;
+  color: #dc2626;
+}
+
+.contract-list__action-btn--delete:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* Status pill */
+.contract-list__status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.contract-list__status--ativo {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.contract-list__status--inativo {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.contract-list__status--pendente {
+  background: #fefce8;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+/* Edit Modal */
+.contract-list__edit-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.contract-list__edit-modal-content {
+  width: 100%;
+  max-width: 560px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  position: relative;
+  z-index: 10000;
+}
+
+.contract-list__edit-modal-content h3 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.contract-list__edit-modal-content p {
+  margin: 0 0 12px 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.contract-list__edit-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.contract-list__edit-row {
+  display: grid;
+  gap: 6px;
+}
+
+.contract-list__edit-row label {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.contract-list__edit-row input,
+.contract-list__edit-row select {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.contract-list__edit-row input:focus,
+.contract-list__edit-row select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.contract-list__edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.contract-list__edit-save {
+  background: #059669;
+  border: 1px solid #059669;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.contract-list__edit-save:hover {
+  background: #047857;
+  border-color: #047857;
+}
+
+.contract-list__edit-cancel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.contract-list__edit-cancel:hover {
+  background: #f8fafc;
+}
+
+/* Delete Modal */
+.contract-list__delete-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.contract-list__delete-modal-content {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+  border: 1px solid #fee2e2;
+  padding: 24px;
+  position: relative;
+  z-index: 10000;
+}
+
+.contract-list__delete-modal-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.contract-list__delete-modal-content p {
+  margin: 0 0 16px 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* Optional utility for any modal description */
+.contract-list__modal-description {
+  margin: 6px 0 16px 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.contract-list__delete-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.contract-list__delete-confirm {
+  background: #ef4444;
+  border: 1px solid #ef4444;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.contract-list__delete-confirm:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.contract-list__delete-cancel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.contract-list__delete-cancel:hover {
+  background: #f8fafc;
 }
 
 /* Mobile Cards - Hidden by default */

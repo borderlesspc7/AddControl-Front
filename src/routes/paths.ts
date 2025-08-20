@@ -4,4 +4,5 @@ export const paths = {
   adminRoot: "/admin",
   adminRegisterUser: "/admin/register-user",
   adminContracts: "/admin/contracts",
+  adminPrices: "/admin/prices",
 } as const;
